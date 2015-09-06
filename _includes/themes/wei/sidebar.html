@@ -1,0 +1,30 @@
+<div class="clearfix">
+  <a class="avatar" href="/">
+    <img src="{{ ASSET_PATH }}/images/avatar.jpeg" alt="Wei's Blog" class="img-circle">
+  </a>
+  <p>I'm Xuanzhong Wei.</p>
+  <p>
+  <hr>
+  Just keep it <em>simple</em> and <em>clear</em>.
+  </p>
+  <div class="follow-link color-dark no-decoration">
+    <ul class="list-inline">
+        <li>
+          <a href="https://github.com/azrle">
+            <i class="fa fa-github-square fa-lg"></i>&nbsp;Github
+          </a>
+        </li>
+        <li>
+          <a href="/atom.xml">
+            <i class="fa fa-rss-square fa-lg"></i>&nbsp;RSS
+          </a>
+        </li>
+    </ul>
+  </div>
+  <hr>
+  <ul class="nav left-nav color-info">
+    {% assign pages_list = site.pages %}
+    {% assign group = 'navigation' %}
+    {% include JB/pages_list %}
+  </ul>
+</div>

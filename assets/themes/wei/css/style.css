@@ -1,0 +1,83 @@
+h1,h2,h3,.h1,.h2,.h3 {
+    color: #5bc0de;
+}
+
+h1 a,h2 a,h3 a,.h1 a,.h2 a,.h3 a {
+    color: #5bc0de;
+}
+
+.color-info, .color-info a {
+    color: #5bc0de;
+}
+
+.color-dark, .color-dark a {
+    color: #333;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+.date {
+    display: inline;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 3;
+    color: #999;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.no-decoration {
+    text-decoration: none;
+}
+
+.no-decoration a {
+    text-decoration: none;
+}
+
+.site-title {
+    margin-bottom: 7px;
+}
+.follow-link {
+    margin-top: 20px;
+}
+.site-title > a:hover, .follow-link a:hover {
+    color: #777;
+}
+
+.left-nav li>a {
+    padding: 5px 0;
+}
+.left-nav li>a:hover {
+    background-color: inherit;
+}
+
+.avatar {
+    display: block;
+    width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.avatar img {
+    max-height: 120px;
+    max-width: 120px;
+}
+
+.content {
+    margin-bottom: 20px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 50px;
+    background-color: #f5f5f5;
+}
+
+footer p {
+    padding-top: 16px;
+    margin: 0;
+}

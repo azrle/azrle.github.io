@@ -1,12 +1,15 @@
 ---
-layout: page
+layout: default
 ---
-{% include JB/setup %}
-
-
 {% for post in site.posts %}
-  <div class="page-header">
-      <div style="float: right; clear: both;">{{ post.date | date_to_long_string }}</div>
-      <h3><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></h3>
-  </div>
+<div class="post-item no-decoration">
+  <h3>
+    <span class="date">{{ post.date | date: "%Y-%m-%d" }}</span>
+    <br>
+    <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a>
+  </h3>
+  <p class="preview">
+    {{ post.excerpt }}
+  </p> <a class="color-info" href="{{ BASE_PATH }}{{ post.url }}">...more</a>
+</div>
 {% endfor %}
