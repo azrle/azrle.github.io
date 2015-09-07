@@ -84,7 +84,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : xuanzhongwei
+      short_name : xzwei-github
     livefyre :
       site_id : 123
     intensedebate :

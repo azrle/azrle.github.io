@@ -1,7 +1,7 @@
 {% capture jbcache %}{% comment %}
 
   Determine whether or not the site is being built in a production environment.
-  
+
   Parameters:
     None.
 
@@ -10,14 +10,14 @@
     jb_prod_env: [development|github|other]
 
   Examples:
-  
+
     {% include JB/is_production %}
-    
+
     {% if is_production != true %}
       <h3>This is Private</h3>
       <p>I love to watch television in my undies. Don't tell anyone!</p>
     {% endif %}
-    
+
     <h3>This is Public</h3>
     <p>I have no unusual quirks.</p>
 
