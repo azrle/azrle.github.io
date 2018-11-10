@@ -2,10 +2,8 @@
 layout: post
 title: "Memos Abount Logging"
 description: "Memos about why and how to logging"
-category: tech
 tags: [logging, tech]
 ---
-{% include JB/setup %}
 
 # 为什么要Logging
 
