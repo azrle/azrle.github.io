@@ -1,7 +1,5 @@
 ---
 layout: post
-title: "Memos Abount Logging"
-description: "Memos about why and how to logging"
 tags: [logging, tech]
 ---
 
