@@ -3,20 +3,21 @@ layout: post
 tags: [logging, tech]
 ---
 
-# 为什么要Logging
+## 为什么要Logging
 
 日志的种类多种多样，系统日志、访问日志、审计日志、事件日志、事务日志、消息日志等等，我想通过日志的目的，来把日志分为四类。我们为什么要Logging？
 
 1. 还原现场，Debugging。在系统出现问题或是为了检查系统是否出问题时，我们常常会去查看日志，此种日志多是human-readable 的。可以是格式化的日志，也常见非格式化的日志。
 2. 用于监视、统计、取证等的分析。用于这种用途的日志很多，例如访问日志、审计日志等。为了方便系统处理分析，多是格式化的数据。
+<!--more-->
 3. 数据传递。日志也经常用作系统间的信息传递，一个系统的日志可以是另一个系统的输入。譬如，MySQL 的主从间的数据传递就是借助Binlog 的。由于多是系统间的内部信息传递，二进制格式(协议)比较多。btw，由于事务日志，很多数据库本身就是一个日志系统 (*"THE LOG IS THE DATABASE"*)。
 4. 数据备份及恢复。日志也有用于数据的备份的。数据库系统就常有Write-ahead Logging 等事务日志(如Innodb Log)来恢复状态和数据。MySQL 也有做Binlog 备份及恢复的。
 
 一条日志记录，可能出现在多个日志中，一个日志也可能被用于多个目的。同样，也常见日志由于需求在不断转化、整合、归档。
 
-# 怎么Logging
+## 怎么Logging
 
-## 日志里应该写些什么？
+### 日志里应该写些什么？
 
 日志的用途是决定如何Logging 的一个重要因素。
 
@@ -32,11 +33,11 @@ tags: [logging, tech]
 
 还有一点是关于安全和隐私的。当写入日志的时候，应该意识到谁能访问到这个日志，是否有安全隐患，是否符合隐私协议。譬如说，是否把密码等敏感信息写入日志，甚至是明文的 ([Twitter](https://blog.twitter.com/official/en_us/topics/company/2018/keeping-your-account-secure.html)，[Github](GitHub Accidentally Recorded Some Plaintext Passwords in Its Internal Logs))。特别的，有些条款，譬如GDPR (European Union’s General Data Protection Regulation)，对于日志是有要求的，随意的写入个人信息会招致法律问题，甚至在写入用户IP 地址的时候都得小心翼翼。另外该协议还规定了一个“遗忘权”，用户有权要求你删除用户自己的个人信息，包括日志里的。这些都是在写入日志的时候需要考虑的。
 
-## 日志的格式
+### 日志的格式
 
 日志的格式各种各样，如果不使用日志协议(binary log, [syslog](https://tools.ietf.org/html/rfc5424) 等)，比起非结构化的日志，结构化的日志更有利于机读，应该被建议尽量使用。日志的结构体虽然有很多选择，比如json (streaming), csv, tsv, ltsv 等。就接触的一些日志服务来说，json 应该来说是比较常见的。写日志的时候尽可能采用一些库，比如go 语言中有zap，这样比较容易统一格式。对于一些现有的通用格式，尽量遵从标准，比如，对于时间 [rfc3339](https://www.ietf.org/rfc/rfc3339.txt)，国家代码 [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1)，IPv6 地址 [rfc5952](https://tools.ietf.org/html/rfc5952) 等等。另外，写日志的时候还应该小心一些特殊情况。比如一些二进制数据，是否要先encode 一下，多行日志是否要先转成单行日志，日志是否过长，日志的接收方是否有些特殊要求等。
 
-## 往哪里写？
+### 往哪里写？
 
 日志往哪里写一直都有争论，根据不同场景也可能不同。有的往标准输出写，有的往文件里写，有的往远程服务器写。
 
@@ -50,7 +51,7 @@ tags: [logging, tech]
 
 
 
-# 日志的管理与生命周期
+## 日志的管理与生命周期
 
 日志的管理的难点主要来于两个方面，一方面确保日志尽量不要丢失，另一方面是控制日志的存取以及生命周期。
 
