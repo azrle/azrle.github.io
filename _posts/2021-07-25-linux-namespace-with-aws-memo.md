@@ -8,7 +8,7 @@ tags: ["aws", "linux", "namespace", "net"]
 
 ## UTS Namespace
 
-https://man7.org/linux/man-pages/man7/uts_namespaces.7.html
+[uts_namespaces(7)](https://man7.org/linux/man-pages/man7/uts_namespaces.7.html)
 
 Create a namespace file and mount it by `unshare` command. Note that `sudo` is required here for mounting. It's not for changing the hostname. In "User Namespace" section, a method without `sudo` will be shown.
 
@@ -36,7 +36,7 @@ rm foo.uts
 
 ## User Namespace
 
-https://man7.org/linux/man-pages/man7/user_namespaces.7.html
+[user_namespaces(7)](https://man7.org/linux/man-pages/man7/user_namespaces.7.html)
 
 We can create an user namespace and map users into the namespace.
 
@@ -89,7 +89,7 @@ Note that Uid for unmapped user and group IDs are `65534`.
 
 ## PID namespace
 
-https://man7.org/linux/man-pages/man7/pid_namespaces.7.html
+[pid_namespaces(7)](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html)
 
 ```
 ubuntu@azrle-main:~$ unshare --uts --map-root-user --user --pid --mount bash -c 'date; date'
@@ -97,7 +97,7 @@ Sun 25 Jul 2021 11:15:38 AM UTC
 bash: fork: Cannot allocate memory
 ```
 
-The second `date` encounter an `ENOMEM` error. The reason behind is that the first `date` is the init process for the namespace and it ends. As the result, no more process can be created inside the namespace as the init is dead. Attempts will fail with `ENOMEM` error.
+The second `date` encounters an `ENOMEM` error. The reason behind is that the first `date` is the init process for the namespace and it ends. As the result, no more process can be created inside the namespace as the init is dead. Attempts will fail with `ENOMEM` error.
 
 To solve this, we need `--fork` option.
 ```
@@ -143,7 +143,7 @@ root          10  0.0  0.7   8892  3344 pts/5    R+   11:27   0:00 ps auxwww
 
 ## Mount Namespace
 
-https://man7.org/linux/man-pages/man7/mount_namespaces.7.html
+[mount_namespaces(7)](https://man7.org/linux/man-pages/man7/mount_namespaces.7.html)
 
 We have already seen the mount namespace. Let's see another option to switch root directory.
 
@@ -159,13 +159,15 @@ container-test
 
 ## Network Namespace
 
-https://man7.org/linux/man-pages/man7/network_namespaces.7.html
+[network_namespaces(7)](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)
 
 ### Setup
 * foo (Primary IP: 172.31.37.209, Secondary IP: 172.31.37.240)
 * bar (Primary IP: 172.31.43.37, Secondary IP: 172.31.37.27)
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/MultipleIP.html
+[AWS UserGuide - Multiple IP]https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/MultipleIP.html
+
+This demo is using secondary private IP on the same network interface (ENI) with the primary private IP. You can also different ENI for the similar purpose.
 
 ### Inside VPC
 ```
@@ -265,6 +267,7 @@ root@container-foo:~# ip r
 root@container-foo:~# 
 root@container-foo:~# ip route add 172.31.32.1 dev veth_guest_foo
 root@container-foo:~# ip route replace default via 172.31.32.1 dev veth_guest_foo
+
 ## Set the secondary IP for the namespace
 root@container-foo:~# ip addr add 172.31.37.240 dev veth_guest_foo
 root@container-foo:~# ip --br a
@@ -274,7 +277,8 @@ veth_guest_foo@if4 UP             172.31.37.240/32 fe80::50fe:54ff:fe6a:f8fd/64
 ## It's not enough. We need let the interface know where to deliever frames at link layer.
 ## From the namespace (container) interface, the first hop will be the paired interface outside the namespace (host).
 ## Therefore, set the MAC address of veth_host_foo to gateway address (172.31.32.1)
-root@container-foo:~# arp -i veth_guest_foo -s 172.31.32.1 66:29:2b:4d:aa:49  # MAC address matches the ip command result above run on the host
+root@container-foo:~# arp -i veth_guest_foo -s 172.31.32.1 66:29:2b:4d:aa:49
+# MAC address matches the ip command result above run on the host
 ```
 
 Now back to the host. We configured the host as the gateway router of the namespace (container). Hence, let us enable forwarding to let the kernel be able to work as a router. Also, we need route traffic to secondary IP that is used by `veth_guest_foo` into the namespace via the paired interface `veth_host_foo`.
@@ -339,7 +343,7 @@ rtt min/avg/max/mdev = 0.173/0.229/0.330/0.071 ms
 ```
 
 ### Egress to the Internet
-We still have a "problem". We cannot access the Internet. Currently, we are using the secondary private IP inside the namespace (container). AWS will not translate it to public IP address.
+We still have a "problem". We cannot access the Internet from the namespace even though we can do that on the host (Internet gateway is correctly configured for the host). Currently, we are using the secondary private IP inside the namespace (container). AWS will not translate it to public IP address.
 
 ```
 root@container-foo:~# ping -c3 8.8.8.8
@@ -349,11 +353,12 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 3 packets transmitted, 0 received, 100% packet loss, time 2043ms
 ```
 
-Here is a solution. We can configure a SNAT to set the source to the primary IP when accessing non-VPC network.
+Here is a solution. We can configure a SNAT to set the source IP to the primary IP when accessing non-VPC network.
 ```
 # On the host
 
-## Recall 172.31.37.209 is the primary IP address
+## Recall 172.31.37.209 is the primary IP address.
+## 172.31.0.0/16 is our VPC CIDR.
 ubuntu@foo:~$ sudo iptables -t nat -A POSTROUTING -o ens5 -j SNAT --to 172.31.37.209 ! -d 172.31.0.0/16
 ubuntu@foo:~$ sudo iptables -t nat -L -n
 Chain PREROUTING (policy ACCEPT)
